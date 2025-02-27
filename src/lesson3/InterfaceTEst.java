@@ -7,6 +7,7 @@ public class InterfaceTEst implements MyInterface {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		MyInterface mi = new ChildLife();
+		
 	}
 
 	@Override
