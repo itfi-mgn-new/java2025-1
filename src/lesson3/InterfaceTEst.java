@@ -32,9 +32,9 @@ interface MyInterface {
 		
 	}
 	
-	private void rrr() {
-		
-	}
+//	private void rrr() {
+//		
+//	}
 }
 
 interface MyInterface2 {
