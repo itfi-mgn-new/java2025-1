@@ -1,5 +1,6 @@
 package lesson5;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public class REflectionTEst {
@@ -13,10 +14,23 @@ public class REflectionTEst {
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		test(new REflectionTEst());
-		test(new Another());
+		test(new MyClass());
 	}
 
 	static void test(final Object x) throws Exception {
+		int sum = 0;
+		Class	temp = x.getClass();
+		while (temp != null) {
+			for(Field fld : temp.getDeclaredFields()) {
+				if (fld.getType() == int.class) {
+					fld.setAccessible(true);
+					sum += fld.getInt(x);
+				}
+			}
+			temp = temp.getSuperclass();
+		}
+		System.err.println("Sum="+sum);
+		
 		final Class	cl = x.getClass();
 		
 		System.err.println("name="+cl.getName());
@@ -42,6 +56,8 @@ public class REflectionTEst {
 		System.err.println("Value="+f.get(x));
 	
 		f.set(x,  25);
+		
+		
 //		System.err.println("Value="+((REflectionTEst)x).field);
 	}
 	
