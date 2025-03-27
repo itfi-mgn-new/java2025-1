@@ -18,9 +18,17 @@ public class EnumTEst {
 			case MONDAY/*.ordinal()*/ :
 				//l;dfgkl;kfdlg;kf
 				break;
-			default :
-				//l;dfgkl;kfdlg;kf
+//			default :
+//				//l;dfgkl;kfdlg;kf
+//				break;
+			case SATURDAY:
+			case SUNDAY:
+			case THURSDAY:
+			case TUESDAY:
+			case WEDNEDSAY:
 				break;
+			default:
+				throw new UnsupportedOperationException("Type ["+en+"] is not supported yet");
 		}
 		Class	cl = EnumTEst.class;
 		
