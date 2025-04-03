@@ -25,7 +25,7 @@ public class LambdaTest {
 		System.err.println("Name 2="+cl.getCanonicalName());
 		call(mi);
 		
-		call(()->vassya()/*LambdaTest::lambda$1*/);/*
+		call(/*test*/(/*int*/ x)->vassya()/*LambdaTest::lambda$1*/);/*
 				new MyInterface() {
 				public void print() {
 					lambda$1();
