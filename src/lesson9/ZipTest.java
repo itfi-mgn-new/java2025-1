@@ -53,6 +53,7 @@ public class ZipTest {
 			final ZipInputStream	zis = new ZipInputStream(is)) {
 			ZipEntry	ze;
 
+			
 			while ((ze = zis.getNextEntry()) != null) {
 				System.err.println("Name="+ze.getName());
 				Reader		rdr = new InputStreamReader(zis); 
