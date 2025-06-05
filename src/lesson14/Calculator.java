@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -27,7 +28,7 @@ public class Calculator extends JFrame {
 		super("Java Swing forever!");
 		this.automat = automat;
 		
-		value.setFont(new Font("Courier",Font.BOLD|Font.ITALIC,36));	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"
+		value.setFont(new Font("Courier",Font.BOLD|Font.ITALIC,36));	// Наводим красоту на "индикатор"
 		value.setFocusable(false);
 		value.setEditable(false);
 		value.setForeground(Color.GREEN);
@@ -35,7 +36,7 @@ public class Calculator extends JFrame {
 		value.setHorizontalAlignment(JTextField.RIGHT);
 		value.setText(String.valueOf(automat.getValue()));
 		
-		getContentPane().setLayout(new BorderLayout());					// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+		getContentPane().setLayout(new BorderLayout());					// Готовим панель кнопок
 		
 		final JPanel	buttons = new JPanel(new GridLayout(4,6,2,2));
 		
@@ -51,7 +52,7 @@ public class Calculator extends JFrame {
 		appendButton(buttons,"6",KeyboardButton.KB_6);
 		buttons.add(new JLabel(""));
 		appendButton(buttons,"-",KeyboardButton.KB_MINUS);
-		appendButton(buttons,"<-",KeyboardButton.KB_BKSP);
+		appendButton(buttons,"<==",KeyboardButton.KB_BKSP);
 
 		appendButton(buttons,"1",KeyboardButton.KB_1);
 		appendButton(buttons,"2",KeyboardButton.KB_2);
@@ -67,12 +68,12 @@ public class Calculator extends JFrame {
 		appendButton(buttons,"/",KeyboardButton.KB_DIV);
 		buttons.add(new JLabel(""));
 		
-		getContentPane().add(value,BorderLayout.NORTH);			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+		getContentPane().add(value,BorderLayout.NORTH);			// Формируем окно и располагаем его на экране
 		getContentPane().add(buttons,BorderLayout.CENTER);
 		setSize(400,300);
 		setLocationRelativeTo(null);
 		
-		// пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ ESC пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Swing-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+		// Вот таким способом можно назначить кавишу ESC для завершения работы Swing-приложения
 		((JPanel)getContentPane()).getInputMap(JPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),"closeApplication");
 		((JPanel)getContentPane()).getActionMap().put("closeApplication",new AbstractAction() {
 			private static final long serialVersionUID = 1L;
@@ -87,9 +88,9 @@ public class Calculator extends JFrame {
 	private void appendButton(final JPanel panel,final String caption, final KeyboardButton terminal) {
 		final JButton	btn = new JButton(caption);
 		
-		btn.addActionListener((e)->{		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 
-			automat.process(terminal);		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-			value.setText(String.valueOf(automat.getValue())); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ".
+		btn.addActionListener((e)->{		// Обработчик нажатия кнопок  
+			automat.process(terminal);		// Обработка клавиш калькулятора
+			value.setText(String.valueOf(automat.getValue())); // Обновление содержимого "индикатора".
 		});
 		panel.add(btn);
 	}
@@ -99,48 +100,59 @@ public class Calculator extends JFrame {
 	}
 }
 
-enum TerminalGroup {					// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-	NUMBER, ARITHMETIC, SIGN, EDIT, TOTAL, RESET
+enum TerminalGroup {					// Типы терминальных символов автомата
+	UNARY, BINARY, TOTAL, RESET
 }
 
-enum KeyboardButton {					// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-	KB_0(0,TerminalGroup.NUMBER),
-	KB_1(1,TerminalGroup.NUMBER),
-	KB_2(2,TerminalGroup.NUMBER),
-	KB_3(3,TerminalGroup.NUMBER),
-	KB_4(4,TerminalGroup.NUMBER),
-	KB_5(5,TerminalGroup.NUMBER),
-	KB_6(6,TerminalGroup.NUMBER),
-	KB_7(7,TerminalGroup.NUMBER),
-	KB_8(8,TerminalGroup.NUMBER),
-	KB_9(9,TerminalGroup.NUMBER),
-	KB_SIGN(TerminalGroup.SIGN),
-	KB_PLUS((x,y)->x+y,TerminalGroup.ARITHMETIC),
-	KB_MINUS((x,y)->x-y,TerminalGroup.ARITHMETIC),
-	KB_MUL((x,y)->x*y,TerminalGroup.ARITHMETIC),
-	KB_DIV((x,y)->x/y,TerminalGroup.ARITHMETIC),
+enum KeyboardButton {					// Обратите внимание - нумерации, как и любой класс, можно расширять дополнительными полями и методами
+	KB_0((x)->10*x+0,TerminalGroup.UNARY),
+	KB_1((x)->10*x+1,TerminalGroup.UNARY),
+	KB_2((x)->10*x+2,TerminalGroup.UNARY),
+	KB_3((x)->10*x+3,TerminalGroup.UNARY),
+	KB_4((x)->10*x+4,TerminalGroup.UNARY),
+	KB_5((x)->10*x+5,TerminalGroup.UNARY),
+	KB_6((x)->10*x+6,TerminalGroup.UNARY),
+	KB_7((x)->10*x+7,TerminalGroup.UNARY),
+	KB_8((x)->10*x+8,TerminalGroup.UNARY),
+	KB_9((x)->10*x+9,TerminalGroup.UNARY),
+	KB_BKSP((x)->x/10,TerminalGroup.UNARY),
+	KB_SIGN((x)->-x,TerminalGroup.UNARY),
+	KB_PLUS((x,y)->x+y,TerminalGroup.BINARY),
+	KB_MINUS((x,y)->x-y,TerminalGroup.BINARY),
+	KB_MUL((x,y)->x*y,TerminalGroup.BINARY),
+	KB_DIV((x,y)->x/y,TerminalGroup.BINARY),
 	KB_TOTAL(TerminalGroup.TOTAL),
-	KB_BKSP(TerminalGroup.EDIT),
 	KB_CLEAR(TerminalGroup.RESET);
 	
 	private final int							value;
-	private final BiFunction<Long,Long,Long>	action;
+	private final Function<Long,Long>			unaryAction;
+	private final BiFunction<Long,Long,Long>	binaryAction;
 	private final TerminalGroup					group;
 
-	KeyboardButton(TerminalGroup group) {
-		this.action = null;
+	KeyboardButton(final TerminalGroup group) {
+		this.unaryAction = null;
+		this.binaryAction = null;
 		this.value = 0;
 		this.group = group;
 	}
 	
-	KeyboardButton(int value, TerminalGroup group) {
-		this.action = null;
+	KeyboardButton(final int value, final TerminalGroup group) {
+		this.unaryAction = null;
+		this.binaryAction = null;
 		this.value = value;
 		this.group = group;
 	}
 
-	KeyboardButton(BiFunction<Long,Long,Long> action, TerminalGroup group) {
-		this.action = action;
+	KeyboardButton(final Function<Long,Long> action, final TerminalGroup group) {
+		this.unaryAction = action;
+		this.binaryAction = null;
+		this.value = 0;
+		this.group = group;
+	}
+	
+	KeyboardButton(final BiFunction<Long,Long,Long> action, final TerminalGroup group) {
+		this.unaryAction = null;
+		this.binaryAction = action;
 		this.value = 0;
 		this.group = group;
 	}
@@ -148,9 +160,13 @@ enum KeyboardButton {					// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ -
 	public int value() {
 		return value;
 	}
+
+	public Function<Long,Long> unaryAction() {
+		return unaryAction;
+	}
 	
-	public BiFunction<Long,Long,Long> function() {
-		return action;
+	public BiFunction<Long,Long,Long> binaryAction() {
+		return binaryAction;
 	}
 
 	public TerminalGroup terminalGroup() {
@@ -164,28 +180,30 @@ enum KeyboardButton {					// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ -
 }
 
 class CalculatorAutomat {
-	public static final int	STATE_INITIAL = 0;
-	public static final int	STATE_FIRST_OPERAND = 1;
-	public static final int	STATE_BEFORE_SECOND_OPERAND = 2;
-	public static final int	STATE_SECOND_OPERAND = 3;
+	private static enum AutomatState {
+		STATE_INITIAL,
+		STATE_FIRST_OPERAND,
+		STATE_BEFORE_SECOND_OPERAND,
+		STATE_SECOND_OPERAND
+	}
 
 	@FunctionalInterface
 	private interface Action {
 		void process(final CalculatorAutomat automat, final KeyboardButton btn);
 	}
 	
-	private int		currentState = STATE_INITIAL;			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	private AutomatState	currentState = AutomatState.STATE_INITIAL;			// Текущее состояние автомата
 	
-	private long	currentValue = 0, previousValue = 0;
+	private long			currentValue = 0, previousValue = 0;
 	private BiFunction<Long,Long,Long>	prevOperator = null;
 
-	private class AutomatTable {	// пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ 
-		private final int 			state;
+	private class AutomatTable {	// Класс, описывающий одну строку автоматной таблицы  
+		private final AutomatState	state;
 		private final TerminalGroup	terminal;
-		private final int			newState;
+		private final AutomatState	newState;
 		private final Action		action;
 		
-		public AutomatTable(int state, TerminalGroup terminal, int newState, Action action) {
+		public AutomatTable(final AutomatState state, final TerminalGroup terminal, final AutomatState newState, final Action action) {
 			this.state = state;
 			this.terminal = terminal;
 			this.newState = newState;
@@ -198,88 +216,61 @@ class CalculatorAutomat {
 		}
 	}
 
-	// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:
-	private final AutomatTable[]	AT = {	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-											new AutomatTable(STATE_INITIAL,TerminalGroup.RESET,STATE_INITIAL,(automat,btn)->{
+	// Граф переходов автомата:
+	private final AutomatTable[]	AT = {	// Начальное состояние автомата
+											new AutomatTable(AutomatState.STATE_INITIAL,TerminalGroup.RESET,AutomatState.STATE_INITIAL,(automat,btn)->{
 												currentValue = previousValue = 0;
 											}),
-											new AutomatTable(STATE_INITIAL,TerminalGroup.NUMBER,STATE_FIRST_OPERAND,(automat,btn)->{
-												currentValue = btn.value();
+											new AutomatTable(AutomatState.STATE_INITIAL,TerminalGroup.UNARY,AutomatState.STATE_FIRST_OPERAND,(automat,btn)->{
+												currentValue = btn.unaryAction().apply(0L);
 											}),
-											// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-											new AutomatTable(STATE_FIRST_OPERAND,TerminalGroup.NUMBER,STATE_FIRST_OPERAND,(automat,btn)->{
-												currentValue = 10 * currentValue + btn.value();
+											// Ввод первого операнда
+											new AutomatTable(AutomatState.STATE_FIRST_OPERAND,TerminalGroup.UNARY,AutomatState.STATE_FIRST_OPERAND,(automat,btn)->{
+												currentValue = btn.unaryAction().apply(currentValue);
 											}),
-											new AutomatTable(STATE_FIRST_OPERAND,TerminalGroup.EDIT,STATE_FIRST_OPERAND,(automat,btn)->{
-												currentValue = trimValue(currentValue);
-											}),
-											new AutomatTable(STATE_FIRST_OPERAND,TerminalGroup.SIGN,STATE_FIRST_OPERAND,(automat,btn)->{
-												currentValue = -currentValue;
-											}),
-											new AutomatTable(STATE_FIRST_OPERAND,TerminalGroup.RESET,STATE_INITIAL,(automat,btn)->{
+											new AutomatTable(AutomatState.STATE_FIRST_OPERAND,TerminalGroup.RESET,AutomatState.STATE_INITIAL,(automat,btn)->{
 												currentValue = previousValue = 0;
 											}),
-											new AutomatTable(STATE_FIRST_OPERAND,TerminalGroup.ARITHMETIC,STATE_BEFORE_SECOND_OPERAND,(automat,btn)->{
-												prevOperator = btn.function();
+											new AutomatTable(AutomatState.STATE_FIRST_OPERAND,TerminalGroup.BINARY,AutomatState.STATE_BEFORE_SECOND_OPERAND,(automat,btn)->{
+												prevOperator = btn.binaryAction();
 											}),
-											// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-											new AutomatTable(STATE_BEFORE_SECOND_OPERAND,TerminalGroup.RESET,STATE_INITIAL,(automat,btn)->{
+											// Начало ввода второго операнда
+											new AutomatTable(AutomatState.STATE_BEFORE_SECOND_OPERAND,TerminalGroup.RESET,AutomatState.STATE_INITIAL,(automat,btn)->{
 												currentValue = previousValue = 0;
 											}),
-											new AutomatTable(STATE_BEFORE_SECOND_OPERAND,TerminalGroup.NUMBER,STATE_SECOND_OPERAND,(automat,btn)->{
+											new AutomatTable(AutomatState.STATE_BEFORE_SECOND_OPERAND,TerminalGroup.UNARY,AutomatState.STATE_SECOND_OPERAND,(automat,btn)->{
 												previousValue = currentValue;
-												currentValue = btn.value();
+												currentValue = btn.unaryAction().apply(0L);
 											}),
-											// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-											new AutomatTable(STATE_SECOND_OPERAND,TerminalGroup.NUMBER,STATE_SECOND_OPERAND,(automat,btn)->{
-												currentValue = 10 * currentValue + btn.value();
+											// Ввод второго операнда
+											new AutomatTable(AutomatState.STATE_SECOND_OPERAND,TerminalGroup.UNARY,AutomatState.STATE_SECOND_OPERAND,(automat,btn)->{
+												currentValue = btn.unaryAction().apply(currentValue);
 											}),
-											new AutomatTable(STATE_SECOND_OPERAND,TerminalGroup.EDIT,STATE_SECOND_OPERAND,(automat,btn)->{
-												currentValue = trimValue(currentValue);
-											}),
-											new AutomatTable(STATE_SECOND_OPERAND,TerminalGroup.SIGN,STATE_SECOND_OPERAND,(automat,btn)->{
-												currentValue = -currentValue;
-											}),
-											new AutomatTable(STATE_SECOND_OPERAND,TerminalGroup.RESET,STATE_INITIAL,(automat,btn)->{
+											new AutomatTable(AutomatState.STATE_SECOND_OPERAND,TerminalGroup.RESET,AutomatState.STATE_INITIAL,(automat,btn)->{
 												currentValue = previousValue = 0;
 											}),
-											new AutomatTable(STATE_SECOND_OPERAND,TerminalGroup.ARITHMETIC,STATE_BEFORE_SECOND_OPERAND,(automat,btn)->{
+											new AutomatTable(AutomatState.STATE_SECOND_OPERAND,TerminalGroup.BINARY,AutomatState.STATE_BEFORE_SECOND_OPERAND,(automat,btn)->{
 												currentValue = prevOperator.apply(previousValue,currentValue);
-												prevOperator = btn.function();
+												prevOperator = btn.binaryAction();
 											}),
-											new AutomatTable(STATE_SECOND_OPERAND,TerminalGroup.TOTAL,STATE_INITIAL,(automat,btn)->{
+											new AutomatTable(AutomatState.STATE_SECOND_OPERAND,TerminalGroup.TOTAL,AutomatState.STATE_INITIAL,(automat,btn)->{
 												currentValue = prevOperator.apply(previousValue,currentValue);
 											}),
 										}; 
 	
-	
-	public CalculatorAutomat() {
-	}
-
-	public void process(final KeyboardButton btn) {	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	public void process(final KeyboardButton btn) {	// Интерпретатор автоматной таблицы
 		for (AutomatTable item : AT) {
 			if (item.state == currentState && btn.terminalGroup() == item.terminal) {
 				currentState = item.newState;
 				item.action.process(this,btn);
-				return;		// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!
+				return;		// Выход обязателен!
 			}
 		}
-		System.err.println("No action: current state="+currentState+", terminal="+btn);	// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ!
+		// Очень легко отлавливать неучтенные переходы в графе!
+		System.err.println("No action: current state="+currentState+", terminal="+btn);
 	}
 	
 	public long getValue() {
 		return currentValue;
 	}
-
-	private long trimValue(final long currentValue) {
-		final String	tmp = String.valueOf(currentValue);
-		
-		if (tmp.length() == 1 || tmp.length() == 2 && currentValue < 0) {
-			return 0;
-		}
-		else {
-			return Long.valueOf(tmp.substring(0,tmp.length()-1));
-		}
-	}
-	
 }
